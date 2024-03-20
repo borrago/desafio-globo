@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mongodb_network
+
+  comentarios:
+    build:
+      context: .
+      args:
+        - MongoDB__ConnectionURI=mongodb://mongodb:27017
+        - MongoDB__DatabaseName=comentarios
+        - MongoDB_CollectionName=Comments
+    ports:
+      - "8080:80"
+    environment:
+      - MongoDB__ConnectionURI=mongodb://mongodb:27017
+      - MongoDB__DatabaseName=comentarios
+      - MongoDB_CollectionName=Comments
+    depends_on:
+      - mongodb
+    networks:
+      - mongodb_network
+
+networks:
+  mongodb_network:
+
+volumes:
+  mongodb_data:
